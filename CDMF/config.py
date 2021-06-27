@@ -10,9 +10,9 @@ parser.add_argument('--emb_dim', type=int, default=128, help='item embedding siz
 
 parser.add_argument('--learning_rate', type=float, default=1e-3, help='initial learning rate')
 parser.add_argument('--weight_decay', type=float, default=128, help='optimizer weight decay')
-parser.add_argument('--max_epochs', type=int, default=100, help='number of total epochs to run')
+parser.add_argument('--max_epochs', type=int, default=5, help='number of total epochs to run')
 parser.add_argument('--batch_size', type=int, default=32, help='number of samples in batch')
 
 parser.add_argument('--num_workers', type=int, default=0, help='number of workers for dataloader')
-parser.add_argument('--gpus', type=str, default='1', help='gpus parameter used for pytorch_lightning')
+parser.add_argument('--gpus', type=str, default='0', help='gpus parameter used for pytorch_lightning')
 parser.add_argument('--seed', type=int, default=43, help='random seed')

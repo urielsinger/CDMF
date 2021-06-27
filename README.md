@@ -13,6 +13,7 @@ The *CDMF* algorithm is capable of incorporating arbitrary and diverse feedback 
 ## Requirements
  - torch
  - pytorch_lightning
+ - wandb
 
 ## Citation
 

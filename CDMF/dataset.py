@@ -10,7 +10,7 @@ class CDMFDataModule(pl.LightningDataModule):
     Example of a DataModule handling data for the CDMF model.
     Currently only generated random data.
     """
-    def __init__(self ,dataset, max_seq_len, batch_size=32, num_workers=0):
+    def __init__(self, dataset, max_seq_len, batch_size=32, num_workers=0):
         super().__init__()
         self.dataset = dataset
         self.max_seq_len = max_seq_len
@@ -42,7 +42,7 @@ class CDMFDataModule(pl.LightningDataModule):
                 seq_len = torch.randint(low=1, high=self.max_seq_len, size=(1,))[0]
                 self.user2seq[user] = {'items': torch.randint(low=1, high=self.n_items + 1, size=(seq_len,)),
                                        'features': torch.randn(size=(seq_len, self.n_features)),
-                                       'timestamps': torch.randint(low=1, high=self.max_seq_len*self.n_users, size=(seq_len,)),
+                                       'timestamps': torch.randint(low=1, high=self.max_seq_len * self.n_users, size=(seq_len,)),
                                        'labels': torch.randint(low=0, high=2, size=(seq_len,))}
         else:
             raise Exception(f'dataset {self.dataset} not supported')
@@ -54,7 +54,7 @@ class CDMFDataModule(pl.LightningDataModule):
         self.datasets = []
         all_timestamps = torch.cat([seq['timestamps'] for seq in self.user2seq.values()])
         qs = (0., 0.7, 0.85, 1.)
-        for i in range(1, len(qs)): # split to train/val/test on timeline
+        for i in range(1, len(qs)):  # split to train/val/test on timeline
             q = torch.Tensor([qs[i - 1], qs[i]])
             start_timestamp, end_timestamp = torch.quantile(all_timestamps.float(), q=q).tolist()
 
@@ -119,5 +119,5 @@ class CDMFDataset(Dataset):
         unique_items = torch.unique(items)
         return [{'user': user,
                  'item': item,
-                 'features': features[items==item][:-1],
-                 'labels': labels[items==item][-1]} for item in unique_items if sum(items==item)>2]
+                 'features': features[items == item][:-1],
+                 'labels': labels[items == item][-1]} for item in unique_items if sum(items == item) > 2]

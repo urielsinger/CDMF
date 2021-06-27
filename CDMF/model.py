@@ -37,7 +37,7 @@ class CDMF(nn.Module):
         self.gamma = nn.Parameter(torch.ones(1))
 
     def forward(self, users, items, R_ui, mask=None):
-        '''
+        """
         Args:
             users: A tensor of size [num_seq] representing the user_id of each sequence in R_ui
             items: A tensor of size [num_seq] representing the item_id of each sequence in R_ui
@@ -47,7 +47,7 @@ class CDMF(nn.Module):
             mask: optional - for padding sequences
         Returns:
             r: A tensor of size [num_seq] where r[i] represents the score of interaction between users[i] and items[i]
-        '''
+        """
         if mask is None:
             mask = torch.ones(R_ui.size()[:-1], device=self.device).bool()
 
@@ -59,7 +59,7 @@ class CDMF(nn.Module):
         W = self.h(Z)
         W[~mask] = 0
 
-        W_alpha = (W ** self.alpha).sum(dim=-1) ** (1/self.alpha)
+        W_alpha = (W ** self.alpha).sum(dim=-1) ** (1 / self.alpha)
         R_beta = mask.float().sum(dim=-1) ** self.beta
         w_tag = W_alpha * R_beta
         w = w_tag ** self.gamma
@@ -68,7 +68,7 @@ class CDMF(nn.Module):
         p = torch.zeros_like(q)
         for user in users.unique():
             user_mask = users == user
-            p[user_mask] = (w[user_mask].unsqueeze(-1) * q[user_mask]).sum(0)/w[user_mask].sum(0)
+            p[user_mask] = (w[user_mask].unsqueeze(-1) * q[user_mask]).sum(0) / w[user_mask].sum(0)
 
         r = (p * q).sum(-1)
 
@@ -93,7 +93,6 @@ class CDMFModule(pl.LightningModule):
 
         self.learning_rate = learning_rate
         self.weight_decay = weight_decay
-
 
     def BPR_loss(self, logits, labels, group=None):
         pair_indices = np.array(list(product(range(len(labels)), repeat=2)))
@@ -123,7 +122,7 @@ class CDMFModule(pl.LightningModule):
         users, items, R_ui, labels, mask = batch['user'], batch['item'], batch['features'], batch['labels'], batch['mask']
         logits = self(users, items, R_ui, mask=mask)
         loss = self.BPR_loss(logits, labels, group=users)
-        self.log(f'loss_{name}', loss)
+        self.log(f'{name}/loss', loss)
         return loss
 
     def training_step(self, batch: dict, batch_idx: int) -> dict:
